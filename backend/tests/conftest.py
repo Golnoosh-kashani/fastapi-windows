@@ -1,12 +1,12 @@
 from typing import Any
 from typing import Generator
-
+from core.config import settings
 import pytest
 from fastapi import FastAPI
 from fastapi.testclient import TestClient
 from sqlalchemy import create_engine
-from sqlalchemy.orm import sessionmaker
-
+from sqlalchemy.orm import sessionmaker,Session
+from tests.utils.user import authentication_token_from_email 
 import sys
 import os
 sys.path.append(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))) 
@@ -71,3 +71,8 @@ def client(
     app.dependency_overrides[get_db] = _get_test_db
     with TestClient(app) as client:
         yield client
+
+
+pytest.fixture("scope=module")
+def normal_user_token_headers(client:TestClient,db_session:Session):
+    return authentication_token_from_email(client=client,email=settings.TEST_USER_EMAIL,db=db_session)

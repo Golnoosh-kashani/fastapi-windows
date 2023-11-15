@@ -20,3 +20,5 @@ pytest
 requests
 #for jwt
 python-jose
+#for accessing data
+python-multipart
